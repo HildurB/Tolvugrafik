@@ -9,6 +9,8 @@ var points;
 
 var NumPoints = 100;
 var colorLoc;
+var translationLocation;
+var translation;
 
 window.onload = function init()
 {
@@ -21,24 +23,23 @@ window.onload = function init()
     //  Initialize our data for the Sierpinski Gasket
     //
 
-    // And, add our initial point into our array of points
-    
+    translation = [0.05, 0.1];
+
     points = [ ];
     
     // Compute new points
     // Each new point is located midway between
     // last point and a randomly chosen vertex
 
-    for ( var i = 0; points.length < NumPoints*3; ++i ) { // *3 cause we need 300 points for 100 triangles
-        var x = Math.random();
-        var y = Math.random();
-        var u = vec2(x, y);
-        points.push( u );
-        var v = vec2(x+0.05, y - 0.1);
-        points.push( v );
-        var k = vec2(x-0.05, y - 0.1);
-        points.push( k );
-    }
+    var x = Math.random();
+    var y = Math.random();
+    var u = vec2(x, y);
+    points.push( u );
+    var v = vec2(x+0.05, y - 0.1);
+    points.push( v );
+    var k = vec2(x-0.05, y - 0.1);
+    points.push( k );
+
 
     //
     //  Configure WebGL
@@ -65,6 +66,7 @@ window.onload = function init()
 
     // Find the location of the variable fColor in the shader program
     colorLoc = gl.getUniformLocation( program, "fColor" );
+    translationLocation = gl.getUniformLocation(program, "vtranslation");
     
     render();
 };
@@ -74,7 +76,8 @@ function render() {
     gl.clear( gl.COLOR_BUFFER_BIT );
 
     for ( var i = 0; i < NumPoints; ++i ) { 
-        gl.uniform4fv( colorLoc, vec4(Math.random(), Math.random(), Math.random(), 1.0) );
+        gl.uniform4fv( colorLoc, vec4(Math.random(), Math.random(), Math.random(), 1.0));
+        gl.uniform4fv( translationLocation, vec4(translation[0], translation[1], 0.0, 0.0));
         gl.drawArrays( gl.TRIANGLES, i*3, 3 );
     }
 
