@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+attribute vec4 vPosition;
+uniform int isShape; // Street = 1, triangle = 2, car = 3, sidewalk = 4, points = 5
+uniform float streetUp;
+uniform float carSpeed;
+uniform float carPosition;
+uniform float frogPositionx;
+uniform float frogPositiony;
+uniform float sidewalkUp;
+uniform float movePoint;
+
+void
+main()
+{
+    vec4 t = vPosition;
+
+    if (isShape == 1) {
+        t.y += streetUp;
+        gl_Position = t;
+    } 
+    else if(isShape == 2) {
+        t.x += frogPositionx;
+        t.y += frogPositiony;
+        gl_Position = t;
+    } 
+    else if(isShape == 3) {
+        t.y += streetUp;
+        t.x += carPosition;
+        gl_Position = t;
+    } 
+    else if(isShape == 4) {
+        t.y += sidewalkUp;
+        gl_Position = t;
+    } 
+    else if(isShape == 5) {
+        t.x += movePoint;
+        gl_Position = t;
+    } 
+    else {
+        gl_Position = vPosition;
+    }
+
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+uniform vec4 rcolor;
+
+void
+main()
+{
+    gl_FragColor = rcolor;
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="frogger.js"></script>
+
+<body>
+<canvas id="gl-canvas" width="1000" height="600"></canvas>
+    <h1 id="points"></h1>
+</body>
+</html>
