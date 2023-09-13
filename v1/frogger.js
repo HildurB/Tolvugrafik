@@ -22,7 +22,7 @@ var point_movement = 0.02;
 var carcolors = [ vec4( 1.0, 0.0, 0.0, 1.0 ), 
                     vec4( 0.0, 1.0, 0.0, 1.0 ), 
                     vec4( 0.0, 0.0, 1.0, 1.0 ) ];
-
+var direction = 'up';
 
 var triangleVertices = [
     0.0, -0.15,
@@ -173,9 +173,15 @@ function render() {
         if(carPosition[i] < -2.0){ /* Make car go back to the beginning if it leaves on the left */
             carPosition[i] = 1.0;
         }
-
+    var add;
+    if(direction == 'down'){
+        add = 0.15;
+    }
+    else {
+        add = 0.0;
+    }
     var xt = (1.0 + trianglePosition[0]);
-    var yt = (1.0 - trianglePosition[1]);
+    var yt = (1.0 - trianglePosition[1] - add);
     var xc = (1.0 + (carPosition[i]+ 0.8));
     var yc = (1.0 - (-0.3 + moveObject[i]));
 
@@ -205,24 +211,26 @@ function render() {
     gl.vertexAttribPointer( attributeLocation, 2, gl.FLOAT, false, 0, 0 );
     gl.uniform4fv( locColor, vec4(0.173, 0.58, 0.051, 1.0) );
     gl.uniform1i( objectLocation, 2);
-    if(trianglePosition[1] > 1.68){
+    if(trianglePosition[1] > 1.0 && direction == 'up'){
         triangleVertices = [
-            -0.07, 0.9,
-            0.07, 0.9,
-            0.0, 0.75
+            0.0, 0.15,
+            0.15, 0.15,
+            0.07, 0.0
         ];
-        trianglePosition = [0.0, 0.0]; 
+        trianglePosition = [0.0, 0.8]; 
         points += 1;
+        direction = 'down';
         gl.bufferData(gl.ARRAY_BUFFER, flatten(triangleVertices), gl.STATIC_DRAW);
     }
-    else if(trianglePosition[1] < -1.68){
+    else if(trianglePosition[1] < -1 && direction == 'down'){
         triangleVertices = [
-            -0.07, -0.9,
-            0.07, -0.9,
-            0.0, -0.75
+            0.0, -0.15,
+            0.15, -0.15,
+            0.07, 0.0
         ];
-        trianglePosition = [0.0, 0.0]; 
+        trianglePosition = [0.0, -0.8]; 
         points+= 1;
+        direction = 'up';
         gl.bufferData(gl.ARRAY_BUFFER, flatten(triangleVertices), gl.STATIC_DRAW);
     }
     gl.uniform1f( frogPositionLocationx, trianglePosition[0]);
